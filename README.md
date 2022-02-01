@@ -50,3 +50,10 @@ As you add users we are making an API call to the Java server to store them, and
 Usually, the way you develop and the way you build and run in production are completely different. I would like to define two phases: Development phase and Production phase.
 
   - In the development phase, we run the java server and the React app on completely different ports. It’s easier and faster to develop that way. If you look at the following diagram the React app is running on port 3000 with the help of a webpack dev server and the java server is running on port 8080.
+  - ![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/dev-env.png)
+
+## Project Structure
+
+Let’s look at the project structure for this project. We need to have two completely different folders for java and react. It’s always best practice to have completely different folders for each one. In this way, you will have a clean architecture.
+
+
