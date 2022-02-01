@@ -397,4 +397,179 @@ Finally, you can list all the users with this endpoint http://localhost:8080/api
 
 ## React App
 
-Now the java code is running on port 8080. Now it’s time to look at the React app. The entire React app is under the folder ```src/main/ui```. You can create with this command ```npx create-react-app ui```. I am not going to put all the files here you can look at the entire files here.
+Now the java code is running on port 8080. Now it’s time to look at the React app. The entire React app is under the folder ```src/main/ui```. You can create with this command ```npx create-react-app ui```. I am not going to put all the files in here. You can look at the entire [repo here](https://github.com/DrVicki/react-java-example).
+
+Let’s see some important files here. Here is the service file which calls Java API.
+
+**UserService.js**
+```
+export async function getAllUsers() {
+
+    const response = await fetch('/api/users');
+    return await response.json();
+}
+
+export async function createUser(data) {
+    const response = await fetch(`/api/user`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+    return await response.json();
+}
+```
+
+Here is the app component which subscribes to these calls and gets the data from the API.
+
+
+**App.js**
+```
+import React, { Component } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
+import { Header } from './components/Header'
+import { Users } from './components/Users'
+import { DisplayBoard } from './components/DisplayBoard'
+import CreateUser from './components/CreateUser'
+import { getAllUsers, createUser } from './services/UserService'
+
+class App extends Component {
+
+  state = {
+    user: {},
+    users: [],
+    numberOfUsers: 0
+  }
+
+  createUser = (e) => {
+      createUser(this.state.user)
+        .then(response => {
+          console.log(response);
+          this.setState({numberOfUsers: this.state.numberOfUsers + 1})
+      });
+      this.setState({user: {}})
+  }
+
+  getAllUsers = () => {
+    getAllUsers()
+      .then(users => {
+        console.log(users)
+        this.setState({users: users, numberOfUsers: users.length})
+      });
+  }
+
+  onChangeForm = (e) => {
+      let user = this.state.user
+      if (e.target.name === 'firstname') {
+          user.firstName = e.target.value;
+      } else if (e.target.name === 'lastname') {
+          user.lastName = e.target.value;
+      } else if (e.target.name === 'email') {
+          user.email = e.target.value;
+      }
+      this.setState({user})
+  }
+
+  render() {
+    
+    return (
+      <div className="App">
+        <Header></Header>
+        <div className="container mrgnbtm">
+          <div className="row">
+            <div className="col-md-8">
+                <CreateUser 
+                  user={this.state.user}
+                  onChangeForm={this.onChangeForm}
+                  createUser={this.createUser}
+                  >
+                </CreateUser>
+            </div>
+            <div className="col-md-4">
+                <DisplayBoard
+                  numberOfUsers={this.state.numberOfUsers}
+                  getAllUsers={this.getAllUsers}
+                >
+                </DisplayBoard>
+            </div>
+          </div>
+        </div>
+        <div className="row mrgnbtm">
+          <Users users={this.state.users}></Users>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+
+## Interaction between Angular and Java API
+
+In the development phase, the React app is running on port 3000 with the help of a ```create-react-app``` and Java API running on port 8080.
+There should be some interaction between these two. We can proxy all the API calls to Java API. Create-react-app provides some inbuilt functionality and to tell the development server to proxy any unknown requests to your API server in development, add a proxy field to your ```package.json``` of the React. Have a look at the below ```package.json``` below. Remember you need to put this in the React UI ```package.json``` file.
+
+
+**package.json**
+```
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "bootstrap": "^4.5.0",
+    "react": "^16.13.1",
+    "react-bootstrap": "^1.0.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:8080",
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+```
+
+With this in place, all the calls starting with ```/api``` will be redirected to http://localhost:8080 where the Java API is running.
+Once this is configured, you can run the React app on port 3000 and java API on 8080 still make them work together.
+
+```
+// java API (Terminal 1)
+mvn clean install
+java -jar target/<war file name>
+// React app (Terminal 2)
+cd src/mamin/ui
+npm start
+```
+
+## Summary
+
+- There are many ways we can build React apps and ship them for production.
+- One way is to build React with Java.
+- In the development phase, we can run React and Java on separate ports.
+- The interaction between these two happens with proxying all the calls to API.
+- In the production phase, you can build the React app and put all the assets in the build folder and load it with the java code.
+- We can package the application for production with a maven plugin and gulp.
