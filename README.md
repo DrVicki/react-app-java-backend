@@ -293,4 +293,100 @@ INSERT INTO users (ID, FIRST_NAME, LAST_NAME, EMAIL) VALUES
 
 Third, start the application, and spring boot creates this table on startup. Once the application is started you can go to this URL ![http://localhost:8080/h2-console](http://localhost:8080/h2-console) and access the database on the web browser. Make sure you have the same JDBC URL, username, and password as in the properties file.
 
+![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/h2-in-mem-database.png)
+
+Let’s add the repository files, service files, and entity classes as below and start the spring boot app.
+
+**Users.java**
+```
+package com.bbtutorials.users.entity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+
+
+import lombok.Data;
+
+@Entity
+@Data
+public class Users {
+	
+	@Id
+	@Column
+    private long id;
+
+    @Column
+    @NotNull(message="{NotNull.User.firstName}")
+    private String firstName;
+    
+    @Column
+    @NotNull(message="{NotNull.User.lastName}")
+    private String lastName;
+    
+    @Column
+    @NotNull(message="{NotNull.User.email}")
+    private String email;
+
+}
+```
+
+**UsersRepository.java**
+```
+package com.bbtutorials.users.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+import com.bbtutorials.users.entity.Users;
+
+@RepositoryRestResource()
+public interface UsersRepository extends JpaRepository<Users, Integer>, JpaSpecificationExecutor<Users>, QuerydslPredicateExecutor<Users> {}
+
+```
+
+**UsersService.java**
+```
+package com.bbtutorials.users.service;
+
+import java.util.List;
+import java.util.Random;
+
+import org.springframework.stereotype.Component;
+
+import com.bbtutorials.users.entity.Users;
+import com.bbtutorials.users.repository.UsersRepository;
+
+@Component
+public class UsersService {
+	
+	private UsersRepository usersRepository;
+
+    public UsersService(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
+
+    public List<Users> getUsers() {
+        return usersRepository.findAll();
+    }
+    
+    public Users saveUser(Users users) {
+    	users.setId(new Random().nextInt());
+    	return usersRepository.save(users);
+    }
+
+}
+```
+
+You can start the application in two ways: you can right-click on the ```UsersApplication``` and run it as a java application or do the following steps.
+
+```
+// mvn install
+mvn clean install
+// run the app
+java -jar target/<repo>.war
+```
 
