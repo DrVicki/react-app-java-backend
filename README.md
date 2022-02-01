@@ -56,4 +56,7 @@ Usually, the way you develop and the way you build and run in production are com
 
 Let’s look at the project structure for this project. We need to have two completely different folders for java and react. It’s always best practice to have completely different folders for each one. In this way, you will have a clean architecture.
 
+![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/proj-struct.png)
+
+
 
