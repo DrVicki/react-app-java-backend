@@ -393,4 +393,8 @@ java -jar target/<repo>.war
 
 Finally, you can list all the users with this endpoint http://localhost:8080/api/users.
 
+![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/java-port-8080.png)
 
+## React App
+
+Now the java code is running on port 8080. Now it’s time to look at the React app. The entire React app is under the folder ```src/main/ui```. You can create with this command ```npx create-react-app ui```. I am not going to put all the files here you can look at the entire files here.
