@@ -39,4 +39,6 @@ There are prerequisites for this tutorial. You need to have java installed on yo
 
 This is a simple project which demonstrates developing and running a React application with Java. We have a simple app. We can add users, count, display them at the side, and retrieve them whenever you want.
 
+![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/example-project.gif)
 
+As you add users we are making an API call to the Java server to store them, and get the same data from the server when we retrieve them. You can see network calls in the following video.
