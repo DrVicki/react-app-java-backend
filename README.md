@@ -59,4 +59,12 @@ Let’s look at the project structure for this project. We need to have two comp
 ![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/proj-struct.png)
 
 
+![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/proj-stru-2.png)
 
+If you look at the above project structure, all the React app resides under the ```src/main/ui``` folder and Java code resides under the ```src/main/java``` folder. All the resources are under the folder ```/src/main/resources``` such as properties, static assets, etc.
+
+## Java API
+
+We use spring boot and many other tools such as Spring Devtools, Spring Actuator, etc under the spring umbrella. Almost every application has spring boot and it is an open-source Java-based framework used to create a micro Service. It is developed by the Pivotal Team and is used to build stand-alone and production-ready spring applications.
+
+We start with Spring initializr and select all the dependencies and generate the zip file.
