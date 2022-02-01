@@ -42,3 +42,11 @@ This is a simple project which demonstrates developing and running a React appli
 ![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/example-project.gif)
 
 As you add users we are making an API call to the Java server to store them, and get the same data from the server when we retrieve them. You can see network calls in the following video.
+
+![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/network-calls.gif)
+
+## How To Build and Develop The Project
+
+Usually, the way you develop and the way you build and run in production are completely different. I would like to define two phases: Development phase and Production phase.
+
+  - In the development phase, we run the java server and the React app on completely different ports. It’s easier and faster to develop that way. If you look at the following diagram the React app is running on port 3000 with the help of a webpack dev server and the java server is running on port 8080.
