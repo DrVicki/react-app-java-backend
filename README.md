@@ -20,3 +20,23 @@ In this tutorial project, we will see details and implementation with Java. We w
 
 React is a javascript library for building web apps and it doesn’t load itself in the browser. We need a mechanism which loads the ```index.html``` (single page) of React with all the dependencies (CSS and js files) in the browser. In this case, we are using java as the webserver which loads React assets and accepts any API calls from the React app.
 
+![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/react-with-java.png)
+
+If you look at the above diagram all the web requests without the ```/api``` will go to React router. All the paths that contain ```/api``` will be handled by the Apache Tomcat container.
+
+## Prerequisites
+
+There are prerequisites for this tutorial. You need to have java installed on your laptop. If you want to practice and run this on your laptop you need to have these on your laptop.
+
+  - Java
+  - Create React App
+  - VSCode
+  - Eclipse IDE
+  - react-bootstrap
+  - Maven
+
+# Example Project
+
+This is a simple project which demonstrates developing and running a React application with Java. We have a simple app. We can add users, count, display them at the side, and retrieve them whenever you want.
+
+
