@@ -389,4 +389,8 @@ mvn clean install
 // run the app
 java -jar target/<repo>.war
 ```
+![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/start-springboot-app.gif)
+
+Finally, you can list all the users with this endpoint http://localhost:8080/api/users.
+
 
