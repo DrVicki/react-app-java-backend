@@ -68,3 +68,229 @@ If you look at the above project structure, all the React app resides under the 
 We use spring boot and many other tools such as Spring Devtools, Spring Actuator, etc under the spring umbrella. Almost every application has spring boot and it is an open-source Java-based framework used to create a micro Service. It is developed by the Pivotal Team and is used to build stand-alone and production-ready spring applications.
 
 We start with Spring initializr and select all the dependencies and generate the zip file.
+
+![](https://github.com/DrVicki/react-app-java-backend/blob/main/images/spring-init.png)
+
+Once you import the zip file in eclipse or any other IDE as a Maven project you can see all the dependencies in the ```pom.xml```. Below is the dependencies section of ```pom.xml```.
+
+**pom.xml**
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.6.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.bbtutorials</groupId>
+	<artifactId>users</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
+	<name>users</name>
+	<description>Demo project for Spring Boot</description>
+
+	<properties>
+		<java.version>1.11</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+			<version>1.4.199</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-rest-hal-browser</artifactId>
+		</dependency>
+		<!-- QueryDSL -->
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.mysema.maven</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+				<version>1.1.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/generated-sources/java</outputDirectory>
+							<processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+```
+
+Here are the spring boot file and the controller with two routes one with a GET request and another is POST request.
+
+**UsersApplication.java**
+```
+package com.bbtutorials.users;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class UsersApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(UsersApplication.class, args);
+	}
+
+}
+```
+
+**UsersController.java**
+```
+package com.bbtutorials.users.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bbtutorials.users.entity.Users;
+import com.bbtutorials.users.links.UserLinks;
+import com.bbtutorials.users.service.UsersService;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RestController
+@RequestMapping("/api/")
+public class UsersController {
+	
+	@Autowired
+	UsersService usersService;
+	
+	@GetMapping(path = UserLinks.LIST_USERS)
+    public ResponseEntity<?> listUsers() {
+        log.info("UsersController:  list users");
+        List<Users> resource = usersService.getUsers();
+        return ResponseEntity.ok(resource);
+    }
+	
+	@PostMapping(path = UserLinks.ADD_USER)
+	public ResponseEntity<?> saveUser(@RequestBody Users user) {
+        log.info("UsersController:  list users");
+        Users resource = usersService.saveUser(user);
+        return ResponseEntity.ok(resource);
+    }
+}
+```
+
+## Configure H2 Database
+
+This H2 Database is for development only. When you build this project for production you can replace it with any database of your choice. You can run this database standalone without your application. We will see how we can configure it with spring boot.
+
+First, we need to add some properties to application.properties file under ```/src/main/resources```
+
+```
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=password
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.h2.console.enabled=true
+```
+
+Second, add the below SQL file under the same location.
+
+**data.sql** 
+```
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+  id INT PRIMARY KEY,
+  FIRST_NAME VARCHAR(250) NOT NULL,
+  LAST_NAME VARCHAR(250) NOT NULL,
+  EMAIL VARCHAR(250) NOT NULL
+);
+
+INSERT INTO users (ID, FIRST_NAME, LAST_NAME, EMAIL) VALUES
+  (1, 'first', 'last 1', 'abc1@gmail.com'),
+  (2, 'first', 'last 2', 'abc2@gmail.com'),
+  (3, 'first', 'last 3', 'abc3@gmail.com');
+  ```
+
+Third, start the application, and spring boot creates this table on startup. Once the application is started you can go to this URL ![http://localhost:8080/h2-console](http://localhost:8080/h2-console) and access the database on the web browser. Make sure you have the same JDBC URL, username, and password as in the properties file.
+
+
